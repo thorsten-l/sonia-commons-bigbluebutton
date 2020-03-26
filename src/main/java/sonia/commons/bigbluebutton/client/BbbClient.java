@@ -11,20 +11,20 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class BbbClient {
   
-  private final String apiUrl;
+  private final int apiUrlLength;
   private final String secret;
   private final WebTarget target;
   
-  BbbClient( WebTarget target, String apiUrl, String secret )
+  BbbClient( WebTarget target, int apiUrlLength, String secret )
   {
     this.target = target;
-    this.apiUrl = apiUrl;
+    this.apiUrlLength = apiUrlLength;
     this.secret = secret;
   }
   
   private WebTarget appendChecksum( WebTarget target )
   {
-    String uri = target.getUri().toString().substring(apiUrl.length());
+    String uri = target.getUri().toString().substring(apiUrlLength);
     return target.queryParam("checksum", DigestUtils.sha1Hex( uri + secret ));
   }
   

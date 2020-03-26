@@ -16,6 +16,6 @@ public class BbbClientFactory {
   {
     Client client = ClientBuilder.newClient();
     WebTarget target = client.target(apiUrl);
-    return new BbbClient( target, apiUrl, secret );
+    return new BbbClient( target, apiUrl.length(), secret );
   } 
 }
