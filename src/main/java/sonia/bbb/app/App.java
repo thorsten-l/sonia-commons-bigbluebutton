@@ -32,7 +32,7 @@ public class App
 
     if (options.isHelp())
     {
-      System.out.println( "BBBgetMessages usage:");
+      System.out.println( "BBBgetMeetings usage:");
       parser.printUsage(System.out);
       System.exit(0);
     }
