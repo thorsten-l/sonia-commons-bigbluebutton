@@ -24,6 +24,13 @@ public class App
    */
   public static void main(String[] args) throws Exception
   {
+    
+    if ( args.length == 0 || args.length > 3 )
+    {
+      System.out.println( "Usage: BBBgetMeetings <full api url inclusive trailing slash> <server secret> [-s summary only]");
+      System.exit(0);
+    }
+    
     BbbClient client = BbbClientFactory.createClient(
       args[0], args[1]);
 
