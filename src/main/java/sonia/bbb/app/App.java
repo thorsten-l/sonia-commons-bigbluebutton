@@ -1,6 +1,8 @@
 package sonia.bbb.app;
 
 import java.util.List;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import sonia.commons.bigbluebutton.client.Attendee;
 import sonia.commons.bigbluebutton.client.BbbClient;
 import sonia.commons.bigbluebutton.client.BbbClientFactory;
@@ -13,51 +15,55 @@ import sonia.commons.bigbluebutton.client.Metadata;
  */
 public class App
 {
-
-  /*
-    arg 0 : Full BigBlueButton-API URL include the last '/' slash
-         e.g.  https://bbb.sample.org/bigbluebutton/api/ 
-  
-    arg 1 : the server secret
-  
-    optional args 2:  -s  Print summary only.
-   */
   public static void main(String[] args) throws Exception
   {
-    
-    if ( args.length == 0 || args.length > 3 )
+    Options options = new Options();
+    CmdLineParser parser = new CmdLineParser(options);
+
+    try
     {
-      System.out.println( "Usage: BBBgetMeetings <full api url inclusive trailing slash> <server secret> [-s summary only]");
+      parser.parseArgument(args);
+    }
+    catch (CmdLineException e)
+    {
+      System.out.println(e.getMessage());
+      options.setHelp(true);
+    }
+
+    if (options.isHelp())
+    {
+      System.out.println( "BBBgetMessages usage:");
+      parser.printUsage(System.out);
       System.exit(0);
     }
-    
-    BbbClient client = BbbClientFactory.createClient(
-      args[0], args[1]);
 
-    if (args.length == 3 && "-s".equalsIgnoreCase(args[2]))
+    BbbClient client = BbbClientFactory.createClient(
+      options.getApiUrl(), options.getSecret());
+
+    if (options.isSummary())
     {
       List<Meeting> meetings = client.getMeetings();
-      System.out.println( "meetings: " + meetings.size() );
+      System.out.println("meetings: " + meetings.size());
 
       int numberOfUsers = 0;
       int numberOfAudioStreams = 0;
       int numberOfVideoStreams = 0;
       int numberOfListenOnlyStreams = 0;
-      
-      for (Meeting meeting : meetings )
+
+      for (Meeting meeting : meetings)
       {
         numberOfUsers += meeting.getParticipantCount();
-        for( Attendee attendee : meeting.getAttendees() )
+        for (Attendee attendee : meeting.getAttendees())
         {
-          numberOfAudioStreams += ( attendee.hasJoinedVoice() ? 1 : 0 );
-          numberOfVideoStreams += ( attendee.hasVideo() ? 1 : 0 );
-          numberOfListenOnlyStreams += ( attendee.isListeningOnly() ? 1 : 0 );
+          numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
+          numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
+          numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
         }
       }
-      System.out.println( "users: " + numberOfUsers );
-      System.out.println( "audio: " + numberOfAudioStreams );
-      System.out.println( "video: " + numberOfVideoStreams );
-      System.out.println( "listen only: " + numberOfListenOnlyStreams );
+      System.out.println("users: " + numberOfUsers);
+      System.out.println("audio: " + numberOfAudioStreams);
+      System.out.println("video: " + numberOfVideoStreams);
+      System.out.println("listen only: " + numberOfListenOnlyStreams);
     }
     else
     {
