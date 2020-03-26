@@ -76,6 +76,29 @@
       <version>1.2.0</version>
     </dependency>
   </dependencies>
+  
+  <build>
+    <finalName>BBBgetMeetings</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.2.5.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <mainClass>sonia.bbb.app.App</mainClass>
+              <executable>true</executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
