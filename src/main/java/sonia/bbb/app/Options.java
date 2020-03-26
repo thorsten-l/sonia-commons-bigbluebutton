@@ -30,7 +30,7 @@ public class Options
   private String apiUrl;
   
   @Getter
-  @Option( name="--summary", aliases="-s", usage="Print summary only", required = false )
+  @Option( name="--summary", aliases="-s", usage="Print summary in JSON format", required = false )
   private boolean summary = false;
   
 }

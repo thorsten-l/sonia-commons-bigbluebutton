@@ -43,7 +43,7 @@ public class App
     if (options.isSummary())
     {
       List<Meeting> meetings = client.getMeetings();
-      System.out.println("meetings: " + meetings.size());
+      System.out.println("{\n  \"meetings\":" + meetings.size());
 
       int numberOfUsers = 0;
       int numberOfAudioStreams = 0;
@@ -60,10 +60,10 @@ public class App
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
         }
       }
-      System.out.println("users: " + numberOfUsers);
-      System.out.println("audio: " + numberOfAudioStreams);
-      System.out.println("video: " + numberOfVideoStreams);
-      System.out.println("listen only: " + numberOfListenOnlyStreams);
+      System.out.println("  \"users\":" + numberOfUsers);
+      System.out.println("  \"audio\":" + numberOfAudioStreams);
+      System.out.println("  \"video\":" + numberOfVideoStreams);
+      System.out.println("  \"listenOnly\":" + numberOfListenOnlyStreams + "\n}");
     }
     else
     {
