@@ -11,7 +11,7 @@ import lombok.ToString;
 
 /**
  *
- * @author th
+ * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

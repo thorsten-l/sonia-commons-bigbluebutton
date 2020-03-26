@@ -9,7 +9,7 @@ import sonia.commons.bigbluebutton.client.Metadata;
 
 /**
  *
- * @author th
+ * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 public class App
 {

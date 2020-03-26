@@ -6,7 +6,7 @@ import javax.ws.rs.client.WebTarget;
 
 /**
  *
- * @author th
+ * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 public class BbbClientFactory {
   

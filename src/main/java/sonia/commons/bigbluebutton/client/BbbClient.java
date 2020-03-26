@@ -7,7 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
- * @author th
+ * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 public class BbbClient {
   
