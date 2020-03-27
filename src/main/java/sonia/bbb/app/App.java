@@ -48,7 +48,7 @@ public class App
       Timer timer = new Timer();
       System.out.println("Running task every " + options.getInterval()
         + " seconds.");
-      timer.scheduleAtFixedRate(task, 0, options.getInterval() * 10000);
+      timer.scheduleAtFixedRate(task, 0, options.getInterval() * 1000);
     }
     else if (options.isSummary())
     {
