@@ -1,6 +1,7 @@
 package sonia.bbb.app;
 
 import java.util.List;
+import java.util.Timer;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import sonia.commons.bigbluebutton.client.Attendee;
@@ -32,7 +33,7 @@ public class App
 
     if (options.isHelp())
     {
-      System.out.println( "BBBgetMeetings usage:");
+      System.out.println("BBBgetMeetings usage:");
       parser.printUsage(System.out);
       System.exit(0);
     }
@@ -40,7 +41,16 @@ public class App
     BbbClient client = BbbClientFactory.createClient(
       options.getApiUrl(), options.getSecret());
 
-    if (options.isSummary())
+    if (options.isEnableInfluxDb())
+    {
+      TransferTask task = new TransferTask(client, options.getInfluxDbUrl(),
+        options.getHostname());
+      Timer timer = new Timer();
+      System.out.println("Running task every " + options.getInterval()
+        + " seconds.");
+      timer.scheduleAtFixedRate(task, 0, options.getInterval() * 10000);
+    }
+    else if (options.isSummary())
     {
       List<Meeting> meetings = client.getMeetings();
       System.out.println("{\n  \"meetings\":" + meetings.size());
@@ -63,7 +73,8 @@ public class App
       System.out.println("  \"users\":" + numberOfUsers);
       System.out.println("  \"audio\":" + numberOfAudioStreams);
       System.out.println("  \"video\":" + numberOfVideoStreams);
-      System.out.println("  \"listenOnly\":" + numberOfListenOnlyStreams + "\n}");
+      System.out.
+        println("  \"listenOnly\":" + numberOfListenOnlyStreams + "\n}");
     }
     else
     {

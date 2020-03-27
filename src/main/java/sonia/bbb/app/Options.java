@@ -33,4 +33,20 @@ public class Options
   @Option( name="--summary", aliases="-s", usage="Print summary in JSON format", required = false )
   private boolean summary = false;
   
+  @Getter
+  @Option( name="--hostname", usage="Hostname as database key", required=false )
+  private String hostname;
+  
+  @Getter
+  @Option( name="--interval", usage="Interval in seconds", required=false )
+  private int interval;
+  
+  @Getter
+  @Option( name="--enable-influxdb", usage="Enable writing summary to InfluxDB", required = false )
+  private boolean enableInfluxDb = false;
+
+  @Getter
+  @Option( name="--influxdb-url", usage="InfluxDb URL", required=false )
+  private String influxDbUrl;
+
 }
