@@ -98,7 +98,7 @@ public class Meeting
   private List<Attendee> attendees;
 
   @Getter
-  private Metadata metadata;
+  private MeetingMetadata metadata;
 
   @XmlElement(name = "isBreakout")
   @Getter

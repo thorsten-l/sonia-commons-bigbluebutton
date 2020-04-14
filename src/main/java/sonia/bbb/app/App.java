@@ -8,7 +8,8 @@ import sonia.commons.bigbluebutton.client.Attendee;
 import sonia.commons.bigbluebutton.client.BbbClient;
 import sonia.commons.bigbluebutton.client.BbbClientFactory;
 import sonia.commons.bigbluebutton.client.Meeting;
-import sonia.commons.bigbluebutton.client.Metadata;
+import sonia.commons.bigbluebutton.client.MeetingMetadata;
+import sonia.commons.bigbluebutton.client.Recording;
 
 /**
  *
@@ -40,8 +41,27 @@ public class App
 
     BbbClient client = BbbClientFactory.createClient(
       options.getApiUrl(), options.getSecret());
-
-    if (options.isEnableInfluxDb())
+    
+    if (options.isRecordings())
+    {
+      List<Recording> recordings = client.getRecordings();
+            
+     
+      int i=1;
+      for (Recording recording : recordings)
+      {
+        System.out.println( "\n" + i + ". " + recording.getMetadata().getMeetingName() );
+        System.out.println( "  recordID=" + recording.getRecordID() );
+        System.out.println( "  meetingID=" + recording.getMeetingID() );
+        System.out.println( "  participants=" + recording.getParticipants() );
+        System.out.println( "  rawSize=" + recording.getRawSize() );
+        System.out.println( "  size=" + recording.getRecordingFormats().get(0).getSize() );
+        System.out.println( "  processingTime=" + recording.getRecordingFormats().get(0).getProcessingTime() );
+        System.out.println( "  url=" + recording.getRecordingFormats().get(0).getUrl() );
+        i++;
+      }
+    } 
+    else if (options.isEnableInfluxDb())
     {
       TransferTask task = new TransferTask(client, options.getInfluxDbUrl(),
         options.getHostname());
@@ -83,7 +103,7 @@ public class App
         System.out.println("\n" + meeting.getMeetingName() + " (" + meeting.
           getParticipantCount() + ", " + meeting.getCreateDate() + ")");
 
-        Metadata metadata = meeting.getMetadata();
+        MeetingMetadata metadata = meeting.getMetadata();
         if (metadata != null)
         {
           System.out.println("  + " + metadata);

@@ -34,6 +34,10 @@ public class Options
   private boolean summary = false;
   
   @Getter
+  @Option( name="--recordings", aliases="-r", usage="Get recordings info", required = false )
+  private boolean recordings = false;
+  
+  @Getter
   @Option( name="--hostname", usage="Hostname as database key", required=false )
   private String hostname;
   

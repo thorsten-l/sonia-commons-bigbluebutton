@@ -35,4 +35,12 @@ public class BbbClient {
         
     return response.getMeetings();
   }
+
+  public List<Recording> getRecordings()
+  {
+    RecordingsResponse response = appendChecksum(target.path("getRecordings"))
+            .request().accept(MediaType.APPLICATION_XML).get(RecordingsResponse.class);
+            
+    return response.getRecordings();
+  }
 }

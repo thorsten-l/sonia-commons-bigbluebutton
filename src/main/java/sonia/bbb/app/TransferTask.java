@@ -5,7 +5,6 @@
  */
 package sonia.bbb.app;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -97,7 +96,7 @@ public class TransferTask extends TimerTask
       response = httpClient.send(request, BodyHandlers.ofString());
       System.out.println("response code : " + response.statusCode());
     }
-    catch (IOException | InterruptedException ex)
+    catch (Exception ex)
     {
       Logger.getLogger(TransferTask.class.getName()).log(Level.SEVERE, null, ex);
     }
