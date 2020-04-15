@@ -1,5 +1,6 @@
 package sonia.bbb.app;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import org.kohsuke.args4j.CmdLineException;
@@ -9,6 +10,7 @@ import sonia.commons.bigbluebutton.client.BbbClient;
 import sonia.commons.bigbluebutton.client.BbbClientFactory;
 import sonia.commons.bigbluebutton.client.Meeting;
 import sonia.commons.bigbluebutton.client.MeetingMetadata;
+import sonia.commons.bigbluebutton.client.MeetingResponse;
 import sonia.commons.bigbluebutton.client.Recording;
 
 /**
@@ -45,12 +47,13 @@ public class App
     if (options.isRecordings())
     {
       List<Recording> recordings = client.getRecordings();
-            
-     
+                 
       int i=1;
       for (Recording recording : recordings)
       {
         System.out.println( "\n" + i + ". " + recording.getMetadata().getMeetingName() );
+        System.out.println( "  start time=" + recording.getStartTime() + ", " + new Date(recording.getStartTime()));
+        System.out.println( "  end time=" + recording.getEndTime() + ", " + new Date(recording.getEndTime()));
         System.out.println( "  recordID=" + recording.getRecordID() );
         System.out.println( "  meetingID=" + recording.getMeetingID() );
         System.out.println( "  participants=" + recording.getParticipants() );
@@ -59,6 +62,15 @@ public class App
         System.out.println( "  processingTime=" + recording.getRecordingFormats().get(0).getProcessingTime() );
         System.out.println( "  url=" + recording.getRecordingFormats().get(0).getUrl() );
         i++;
+        MeetingResponse meeting = client.getMeetingInfo(recording.getMeetingID());
+        if ( meeting.found() )
+        {
+          System.out.println( "  - MEETING FOUND" );
+          System.out.println( "    create date=" + meeting.getCreateDate());
+          System.out.println( "    start time=" + meeting.getStartTime() + ", " + new Date(meeting.getStartTime()));
+          System.out.println( "    end time=" + meeting.getEndTime() + ", " + new Date(meeting.getEndTime()));
+          System.out.println( "    attendees=" + meeting.getAttendees().size());
+        }
       }
     } 
     else if (options.isEnableInfluxDb())

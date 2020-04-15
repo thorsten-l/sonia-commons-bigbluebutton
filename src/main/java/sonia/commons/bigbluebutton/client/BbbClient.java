@@ -25,6 +25,14 @@ public class BbbClient {
   private WebTarget appendChecksum( WebTarget target )
   {
     String uri = target.getUri().toString().substring(apiUrlLength);
+    
+    int i = uri.indexOf('?');
+    
+    if ( i > 0 )
+    {
+      uri = uri.substring(0, i) + uri.substring(i+1);
+    }
+        
     return target.queryParam("checksum", DigestUtils.sha1Hex( uri + secret ));
   }
   
@@ -36,11 +44,16 @@ public class BbbClient {
     return response.getMeetings();
   }
 
+  public MeetingResponse getMeetingInfo( String meetingID )
+  {
+    return appendChecksum(target.path("getMeetingInfo").queryParam("meetingID", meetingID))
+            .request().accept(MediaType.APPLICATION_XML).get(MeetingResponse.class);    
+  }
+
   public List<Recording> getRecordings()
   {
     RecordingsResponse response = appendChecksum(target.path("getRecordings"))
             .request().accept(MediaType.APPLICATION_XML).get(RecordingsResponse.class);
-            
     return response.getRecordings();
   }
 }
