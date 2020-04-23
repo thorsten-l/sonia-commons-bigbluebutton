@@ -123,7 +123,7 @@ public class App
 
         for (Attendee attendee : meeting.getAttendees())
         {
-          System.out.println("  - " + attendee.getFullName()
+          System.out.println("  - " + attendee.getFullName()+ " / " + attendee.getClientType()
             + " (" + attendee.getRole()
             + (attendee.hasJoinedVoice() ? ", AUDIO" : "")
             + (attendee.hasVideo() ? ", VIDEO" : "") + ")");

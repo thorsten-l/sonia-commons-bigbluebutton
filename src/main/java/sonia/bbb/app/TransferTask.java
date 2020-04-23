@@ -11,8 +11,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -27,6 +29,20 @@ import sonia.commons.bigbluebutton.client.Meeting;
  */
 public class TransferTask extends TimerTask
 {
+
+  private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
+    "YYYY-MM-dd");
+
+  private static final HashMap<String, String> users = new HashMap();
+
+  private static String currentDate;
+
+  static
+  {
+    currentDate = FORMAT.format(new Date());
+    System.out.println(currentDate);
+  }
+
   private final BbbClient client;
 
   private final String influxDbUrl;
@@ -52,6 +68,15 @@ public class TransferTask extends TimerTask
 
     try
     {
+      String now = FORMAT.format(new Date());
+
+      if (!currentDate.equalsIgnoreCase(now))
+      {
+        System.out.println("*** new day - clearing users hashset");
+        users.clear();
+        currentDate = new String(now);
+      }
+
       List<Meeting> meetings = client.getMeetings();
 
       String message = "meetings,host=" + hostname + " value=" + meetings.size()
@@ -70,6 +95,8 @@ public class TransferTask extends TimerTask
           numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
           numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
+          
+          users.put( attendee.getFullName().toLowerCase(), attendee.getClientType() );
         }
       }
 
@@ -80,6 +107,8 @@ public class TransferTask extends TimerTask
         + "\n";
       message += "listenOnly,host=" + hostname + " value="
         + numberOfListenOnlyStreams + "\n";
+      message += "unique_users,host=" + hostname + " value="
+        + users.size() + "\n";
 
       ///////
       System.out.print(message);
