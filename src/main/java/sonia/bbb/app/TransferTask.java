@@ -49,10 +49,6 @@ public class TransferTask extends TimerTask
 
   private final String hostname;
 
-  private static HttpClient httpClient = HttpClient.newBuilder()
-    .version(HttpClient.Version.HTTP_1_1)
-    .build();
-
   public TransferTask(BbbClient client, String influxDbUrl, String hostname)
   {
     this.client = client;
@@ -95,8 +91,9 @@ public class TransferTask extends TimerTask
           numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
           numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
-          
-          users.put( attendee.getFullName().toLowerCase(), attendee.getClientType() );
+
+          users.put(attendee.getFullName().toLowerCase(), attendee.
+            getClientType());
         }
       }
 
@@ -112,6 +109,11 @@ public class TransferTask extends TimerTask
 
       ///////
       System.out.print(message);
+
+      HttpClient httpClient = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_1_1)
+        .connectTimeout(Duration.ofSeconds(20))
+        .build();
 
       HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(influxDbUrl))
@@ -129,5 +131,7 @@ public class TransferTask extends TimerTask
     {
       Logger.getLogger(TransferTask.class.getName()).log(Level.SEVERE, null, ex);
     }
+    
+    System.gc();
   }
 }
