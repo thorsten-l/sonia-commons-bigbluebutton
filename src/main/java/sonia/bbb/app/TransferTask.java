@@ -98,14 +98,13 @@ public class TransferTask extends TimerTask
       }
 
       message += "users,host=" + hostname + " value=" + numberOfUsers + "\n";
-      message += "audio,host=" + hostname + " value=" + numberOfAudioStreams
-        + "\n";
-      message += "video,host=" + hostname + " value=" + numberOfVideoStreams
-        + "\n";
-      message += "listenOnly,host=" + hostname + " value="
-        + numberOfListenOnlyStreams + "\n";
-      message += "unique_users,host=" + hostname + " value="
-        + users.size() + "\n";
+      message += "audio,host=" + hostname + " value=" + numberOfAudioStreams + "\n";
+      message += "video,host=" + hostname + " value=" + numberOfVideoStreams + "\n";
+      message += "listenOnly,host=" + hostname + " value=" + numberOfListenOnlyStreams + "\n";
+      message += "unique_users,host=" + hostname + " value=" + users.size() + "\n";
+      message += "healthCheck,host=" + hostname + " value=" + 
+        ( numberOfUsers - numberOfAudioStreams 
+            - numberOfVideoStreams - numberOfListenOnlyStreams) + "\n";
 
       ///////
       System.out.print(message);
