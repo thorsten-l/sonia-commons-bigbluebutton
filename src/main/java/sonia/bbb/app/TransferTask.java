@@ -114,7 +114,7 @@ public class TransferTask extends TimerTask
         + "\n";
       message += "healthCheck,host=" + hostname + " value=" + (numberOfUsers
         - numberOfAudioStreams
-        - numberOfVideoStreams - numberOfListenOnlyStreams) + "\n";
+        - numberOfListenOnlyStreams) + "\n";
 
       ///////
       System.out.print(message);

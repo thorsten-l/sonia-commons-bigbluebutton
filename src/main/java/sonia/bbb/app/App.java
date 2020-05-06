@@ -112,7 +112,7 @@ public class App
       }
 
       int healthCheck = numberOfUsers - numberOfAudioStreams
-        - numberOfVideoStreams - numberOfListenOnlyStreams;
+        - numberOfListenOnlyStreams;
 
       if (options.getHealthThreshold() == Integer.MAX_VALUE)
       {
