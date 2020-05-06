@@ -43,36 +43,45 @@ public class App
 
     BbbClient client = BbbClientFactory.createClient(
       options.getApiUrl(), options.getSecret());
-    
+
     if (options.isRecordings())
     {
       List<Recording> recordings = client.getRecordings();
-                 
-      int i=1;
+
+      int i = 1;
       for (Recording recording : recordings)
       {
-        System.out.println( "\n" + i + ". " + recording.getMetadata().getMeetingName() );
-        System.out.println( "  start time=" + recording.getStartTime() + ", " + new Date(recording.getStartTime()));
-        System.out.println( "  end time=" + recording.getEndTime() + ", " + new Date(recording.getEndTime()));
-        System.out.println( "  recordID=" + recording.getRecordID() );
-        System.out.println( "  meetingID=" + recording.getMeetingID() );
-        System.out.println( "  participants=" + recording.getParticipants() );
-        System.out.println( "  rawSize=" + recording.getRawSize() );
-        System.out.println( "  size=" + recording.getRecordingFormats().get(0).getSize() );
-        System.out.println( "  processingTime=" + recording.getRecordingFormats().get(0).getProcessingTime() );
-        System.out.println( "  url=" + recording.getRecordingFormats().get(0).getUrl() );
+        System.out.println("\n" + i + ". " + recording.getMetadata().
+          getMeetingName());
+        System.out.println("  start time=" + recording.getStartTime() + ", "
+          + new Date(recording.getStartTime()));
+        System.out.println("  end time=" + recording.getEndTime() + ", "
+          + new Date(recording.getEndTime()));
+        System.out.println("  recordID=" + recording.getRecordID());
+        System.out.println("  meetingID=" + recording.getMeetingID());
+        System.out.println("  participants=" + recording.getParticipants());
+        System.out.println("  rawSize=" + recording.getRawSize());
+        System.out.println("  size=" + recording.getRecordingFormats().get(0).
+          getSize());
+        System.out.println("  processingTime="
+          + recording.getRecordingFormats().get(0).getProcessingTime());
+        System.out.println("  url=" + recording.getRecordingFormats().get(0).
+          getUrl());
         i++;
-        MeetingResponse meeting = client.getMeetingInfo(recording.getMeetingID());
-        if ( meeting.found() )
+        MeetingResponse meeting = client.
+          getMeetingInfo(recording.getMeetingID());
+        if (meeting.found())
         {
-          System.out.println( "  - MEETING FOUND" );
-          System.out.println( "    create date=" + meeting.getCreateDate());
-          System.out.println( "    start time=" + meeting.getStartTime() + ", " + new Date(meeting.getStartTime()));
-          System.out.println( "    end time=" + meeting.getEndTime() + ", " + new Date(meeting.getEndTime()));
-          System.out.println( "    attendees=" + meeting.getAttendees().size());
+          System.out.println("  - MEETING FOUND");
+          System.out.println("    create date=" + meeting.getCreateDate());
+          System.out.println("    start time=" + meeting.getStartTime() + ", "
+            + new Date(meeting.getStartTime()));
+          System.out.println("    end time=" + meeting.getEndTime() + ", "
+            + new Date(meeting.getEndTime()));
+          System.out.println("    attendees=" + meeting.getAttendees().size());
         }
       }
-    } 
+    }
     else if (options.isEnableInfluxDb())
     {
       TransferTask task = new TransferTask(client, options.getInfluxDbUrl(),
@@ -85,7 +94,6 @@ public class App
     else if (options.isSummary())
     {
       List<Meeting> meetings = client.getMeetings();
-      System.out.println("{\n  \"meetings\":" + meetings.size());
 
       int numberOfUsers = 0;
       int numberOfAudioStreams = 0;
@@ -102,13 +110,26 @@ public class App
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
         }
       }
-      System.out.println("  \"users\":" + numberOfUsers + "," );
-      System.out.println("  \"audio\":" + numberOfAudioStreams + ",");
-      System.out.println("  \"video\":" + numberOfVideoStreams+ ",");
-      System.out.
-        println("  \"listenOnly\":" + numberOfListenOnlyStreams + ",");
-      System.out.
-        println("  \"healthCheck\":" + (numberOfUsers-numberOfAudioStreams-numberOfVideoStreams-numberOfListenOnlyStreams) + "\n}");
+
+      int healthCheck = numberOfUsers - numberOfAudioStreams
+        - numberOfVideoStreams - numberOfListenOnlyStreams;
+
+      if (options.getHealthThreshold() == Integer.MAX_VALUE)
+      {
+        System.out.println("{\n  \"meetings\":" + meetings.size() + ",");
+        System.out.println("  \"users\":" + numberOfUsers + ",");
+        System.out.println("  \"audio\":" + numberOfAudioStreams + ",");
+        System.out.println("  \"video\":" + numberOfVideoStreams + ",");
+        System.out.
+          println("  \"listenOnly\":" + numberOfListenOnlyStreams + ",");
+        System.out.
+          println("  \"healthCheck\":" + healthCheck + "\n}");
+      }
+      else
+      {
+        System.out.println((options.getHealthThreshold() - Math.abs(healthCheck)
+          <= 0) ? "true" : "false");
+      }
     }
     else
     {
@@ -125,7 +146,8 @@ public class App
 
         for (Attendee attendee : meeting.getAttendees())
         {
-          System.out.println("  - " + attendee.getFullName()+ " / " + attendee.getClientType()
+          System.out.println("  - " + attendee.getFullName() + " / " + attendee.
+            getClientType()
             + " (" + attendee.getRole()
             + (attendee.hasJoinedVoice() ? ", AUDIO" : "")
             + (attendee.hasVideo() ? ", VIDEO" : "") + ")");

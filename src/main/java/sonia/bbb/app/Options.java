@@ -46,6 +46,10 @@ public class Options
   private int interval;
   
   @Getter
+  @Option( name="--health-threshold", usage="Absolute health threshold", required=false )
+  private int healthThreshold = Integer.MAX_VALUE;
+  
+  @Getter
   @Option( name="--enable-influxdb", usage="Enable writing summary to InfluxDB", required = false )
   private boolean enableInfluxDb = false;
 

@@ -5,20 +5,26 @@
  */
 package sonia.bbb.app;
 
-import java.net.URI;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+/* JDK11
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+ */
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.var;
 import sonia.commons.bigbluebutton.client.Attendee;
 import sonia.commons.bigbluebutton.client.BbbClient;
 import sonia.commons.bigbluebutton.client.Meeting;
@@ -98,16 +104,22 @@ public class TransferTask extends TimerTask
       }
 
       message += "users,host=" + hostname + " value=" + numberOfUsers + "\n";
-      message += "audio,host=" + hostname + " value=" + numberOfAudioStreams + "\n";
-      message += "video,host=" + hostname + " value=" + numberOfVideoStreams + "\n";
-      message += "listenOnly,host=" + hostname + " value=" + numberOfListenOnlyStreams + "\n";
-      message += "unique_users,host=" + hostname + " value=" + users.size() + "\n";
-      message += "healthCheck,host=" + hostname + " value=" + 
-        ( numberOfUsers - numberOfAudioStreams 
-            - numberOfVideoStreams - numberOfListenOnlyStreams) + "\n";
+      message += "audio,host=" + hostname + " value=" + numberOfAudioStreams
+        + "\n";
+      message += "video,host=" + hostname + " value=" + numberOfVideoStreams
+        + "\n";
+      message += "listenOnly,host=" + hostname + " value="
+        + numberOfListenOnlyStreams + "\n";
+      message += "unique_users,host=" + hostname + " value=" + users.size()
+        + "\n";
+      message += "healthCheck,host=" + hostname + " value=" + (numberOfUsers
+        - numberOfAudioStreams
+        - numberOfVideoStreams - numberOfListenOnlyStreams) + "\n";
 
       ///////
       System.out.print(message);
+
+      /* JDK11
 
       HttpClient httpClient = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_1_1)
@@ -125,12 +137,53 @@ public class TransferTask extends TimerTask
 
       response = httpClient.send(request, BodyHandlers.ofString());
       System.out.println("response code : " + response.statusCode());
+       */
+      URL connectionUrl = new URL(influxDbUrl);
+      HttpURLConnection connection = (HttpURLConnection) connectionUrl.
+        openConnection();
+
+      try
+      {
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+
+        try( PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
+          writer.write(message);
+        }
+
+        StringBuilder content;
+
+        try (BufferedReader reader = new BufferedReader(
+          new InputStreamReader(connection.getInputStream())))
+        {
+          String line;
+          content = new StringBuilder();
+
+          while ((line = reader.readLine()) != null)
+          {
+            content.append(line);
+            content.append(System.lineSeparator());
+          }
+        }
+
+        System.out.println(content.toString());
+        System.out.println( "response code : " + connection.getResponseCode());
+      }
+      finally
+      {
+        if (connection != null)
+        {
+          System.out.println( "--- disconnect ---" );
+          connection.disconnect();
+        }
+      }
+
     }
     catch (Exception ex)
     {
       Logger.getLogger(TransferTask.class.getName()).log(Level.SEVERE, null, ex);
     }
-    
+
     System.gc();
   }
 }
