@@ -88,6 +88,7 @@ public class TransferTask extends TimerTask
       int numberOfAudioStreams = 0;
       int numberOfVideoStreams = 0;
       int numberOfListenOnlyStreams = 0;
+      int numberOfViewerOnlyStreams = 0;
 
       for (Meeting meeting : meetings)
       {
@@ -97,6 +98,8 @@ public class TransferTask extends TimerTask
           numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
           numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
+          numberOfViewerOnlyStreams += ( "VIEWER".equalsIgnoreCase(attendee.getRole()) 
+            && !attendee.hasJoinedVoice() && !attendee.hasVideo() && !attendee.isListeningOnly() ) ? 1 : 0;
 
           users.put(attendee.getFullName().toLowerCase(), attendee.
             getClientType());
@@ -110,11 +113,13 @@ public class TransferTask extends TimerTask
         + "\n";
       message += "listenOnly,host=" + hostname + " value="
         + numberOfListenOnlyStreams + "\n";
+      message += "viewerOnly,host=" + hostname + " value="
+        + numberOfViewerOnlyStreams + "\n";
       message += "unique_users,host=" + hostname + " value=" + users.size()
         + "\n";
       message += "healthCheck,host=" + hostname + " value=" + (numberOfUsers
         - numberOfAudioStreams
-        - numberOfListenOnlyStreams) + "\n";
+        - numberOfListenOnlyStreams - numberOfViewerOnlyStreams) + "\n";
 
       ///////
       System.out.print(message);

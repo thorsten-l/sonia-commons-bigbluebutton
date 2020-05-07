@@ -99,6 +99,7 @@ public class App
       int numberOfAudioStreams = 0;
       int numberOfVideoStreams = 0;
       int numberOfListenOnlyStreams = 0;
+      int numberOfViewerOnlyStreams = 0;
 
       for (Meeting meeting : meetings)
       {
@@ -108,11 +109,13 @@ public class App
           numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
           numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
+          numberOfViewerOnlyStreams += ( "VIEWER".equalsIgnoreCase(attendee.getRole()) 
+            && !attendee.hasJoinedVoice() && !attendee.hasVideo() && !attendee.isListeningOnly() ) ? 1 : 0;
         }
       }
 
       int healthCheck = numberOfUsers - numberOfAudioStreams
-        - numberOfListenOnlyStreams;
+        - numberOfListenOnlyStreams - numberOfViewerOnlyStreams;
 
       if (options.getHealthThreshold() == Integer.MAX_VALUE)
       {
@@ -122,6 +125,8 @@ public class App
         System.out.println("  \"video\":" + numberOfVideoStreams + ",");
         System.out.
           println("  \"listenOnly\":" + numberOfListenOnlyStreams + ",");
+        System.out.
+          println("  \"viewerOnly\":" + numberOfViewerOnlyStreams + ",");
         System.out.
           println("  \"healthCheck\":" + healthCheck + "\n}");
       }
@@ -150,7 +155,8 @@ public class App
             getClientType()
             + " (" + attendee.getRole()
             + (attendee.hasJoinedVoice() ? ", AUDIO" : "")
-            + (attendee.hasVideo() ? ", VIDEO" : "") + ")");
+            +  (attendee.hasVideo() ? ", VIDEO" : "") 
+            + (attendee.isListeningOnly() ? ", LISTENER" : "") + ")");
         }
       }
     }
