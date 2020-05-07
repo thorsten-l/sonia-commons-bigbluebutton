@@ -98,8 +98,7 @@ public class TransferTask extends TimerTask
           numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
           numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
           numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
-          numberOfViewerOnlyStreams += ( "VIEWER".equalsIgnoreCase(attendee.getRole()) 
-            && !attendee.hasJoinedVoice() && !attendee.hasVideo() && !attendee.isListeningOnly() ) ? 1 : 0;
+          numberOfViewerOnlyStreams += ( !attendee.hasJoinedVoice() && !attendee.hasVideo() && !attendee.isListeningOnly() ) ? 1 : 0;
 
           users.put(attendee.getFullName().toLowerCase(), attendee.
             getClientType());
