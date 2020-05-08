@@ -1,5 +1,7 @@
 package sonia.bbb.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -12,13 +14,14 @@ import sonia.commons.bigbluebutton.client.Meeting;
 import sonia.commons.bigbluebutton.client.MeetingMetadata;
 import sonia.commons.bigbluebutton.client.MeetingResponse;
 import sonia.commons.bigbluebutton.client.Recording;
+import sonia.commons.bigbluebutton.client.Statistics;
 
 /**
  *
  * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 public class App
-{
+{  
   public static void main(String[] args) throws Exception
   {
     Options options = new Options();
@@ -93,45 +96,19 @@ public class App
     }
     else if (options.isSummary())
     {
-      List<Meeting> meetings = client.getMeetings();
-
-      int numberOfUsers = 0;
-      int numberOfAudioStreams = 0;
-      int numberOfVideoStreams = 0;
-      int numberOfListenOnlyStreams = 0;
-      int numberOfViewerOnlyStreams = 0;
-
-      for (Meeting meeting : meetings)
-      {
-        numberOfUsers += meeting.getParticipantCount();
-        for (Attendee attendee : meeting.getAttendees())
-        {
-          numberOfAudioStreams += (attendee.hasJoinedVoice() ? 1 : 0);
-          numberOfVideoStreams += (attendee.hasVideo() ? 1 : 0);
-          numberOfListenOnlyStreams += (attendee.isListeningOnly() ? 1 : 0);
-          numberOfViewerOnlyStreams += ( !attendee.hasJoinedVoice() && !attendee.hasVideo() && !attendee.isListeningOnly() ) ? 1 : 0;
-        }
-      }
-
-      int healthCheck = numberOfUsers - numberOfAudioStreams
-        - numberOfListenOnlyStreams - numberOfViewerOnlyStreams;
-
+      
+      Statistics statistics = client.getStatistics();
+ 
       if (options.getHealthThreshold() == Integer.MAX_VALUE)
       {
-        System.out.println("{\n  \"meetings\":" + meetings.size() + ",");
-        System.out.println("  \"users\":" + numberOfUsers + ",");
-        System.out.println("  \"audio\":" + numberOfAudioStreams + ",");
-        System.out.println("  \"video\":" + numberOfVideoStreams + ",");
-        System.out.
-          println("  \"listenOnly\":" + numberOfListenOnlyStreams + ",");
-        System.out.
-          println("  \"viewerOnly\":" + numberOfViewerOnlyStreams + ",");
-        System.out.
-          println("  \"healthCheck\":" + healthCheck + "\n}");
+        ObjectMapper mapper = new ObjectMapper();
+        StringWriter writer = new StringWriter();
+        mapper.writerWithDefaultPrettyPrinter().writeValue( writer, statistics);
+        System.out.println(writer.getBuffer().toString());
       }
       else
       {
-        System.out.println((options.getHealthThreshold() - Math.abs(healthCheck)
+        System.out.println((options.getHealthThreshold() - Math.abs(statistics.getHealthCheck())
           <= 0) ? "true" : "false");
       }
     }

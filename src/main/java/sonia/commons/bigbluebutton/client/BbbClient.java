@@ -56,4 +56,9 @@ public class BbbClient {
             .request().accept(MediaType.APPLICATION_XML).get(RecordingsResponse.class);
     return response.getRecordings();
   }
+  
+  public Statistics getStatistics()
+  {
+    return new Statistics(getMeetings());
+  }
 }
