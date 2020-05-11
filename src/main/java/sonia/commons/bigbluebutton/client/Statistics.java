@@ -18,34 +18,37 @@ public class Statistics
 
   Statistics(List<Meeting> meetings)
   {
-    numberOfMeetings = meetings.size();
-
-    for (Meeting meeting : meetings)
+    if (meetings != null)
     {
-      int participantCount = meeting.getParticipantCount();
-      numberOfUsers += participantCount;
-      largestConference = Math.max(largestConference, participantCount);
-      for (Attendee attendee : meeting.getAttendees())
-      {
-        if ( attendee.hasVideo() )
-        {
-          numberOfVideoStreams += 1;
-        }
-        else if ( attendee.hasJoinedVoice() )
-        {
-          numberOfAudioStreams += 1;
-        }
-        else if ( attendee.isListeningOnly() )
-        {
-          numberOfListenOnlyStreams += 1;
-        }
-        else
-        {
-          numberOfViewerOnlyStreams += 1;
-        }
+      numberOfMeetings = meetings.size();
 
-        users.put(attendee.getFullName().toLowerCase(), attendee.
-          getClientType());
+      for (Meeting meeting : meetings)
+      {
+        int participantCount = meeting.getParticipantCount();
+        numberOfUsers += participantCount;
+        largestConference = Math.max(largestConference, participantCount);
+        for (Attendee attendee : meeting.getAttendees())
+        {
+          if (attendee.hasVideo())
+          {
+            numberOfVideoStreams += 1;
+          }
+          else if (attendee.hasJoinedVoice())
+          {
+            numberOfAudioStreams += 1;
+          }
+          else if (attendee.isListeningOnly())
+          {
+            numberOfListenOnlyStreams += 1;
+          }
+          else
+          {
+            numberOfViewerOnlyStreams += 1;
+          }
+
+          users.put(attendee.getFullName().toLowerCase(), attendee.
+            getClientType());
+        }
       }
     }
   }
