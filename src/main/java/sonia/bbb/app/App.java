@@ -21,10 +21,12 @@ import sonia.commons.bigbluebutton.client.Statistics;
  * @author Thosten Ludewig <t.ludewig@ostfalia.de>
  */
 public class App
-{  
+{
+  public static Options options;
+  
   public static void main(String[] args) throws Exception
   {
-    Options options = new Options();
+    options = new Options();
     CmdLineParser parser = new CmdLineParser(options);
 
     try

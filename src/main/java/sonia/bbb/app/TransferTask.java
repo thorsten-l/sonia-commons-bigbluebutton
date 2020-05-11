@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 /* JDK11
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 import sonia.commons.bigbluebutton.client.BbbClient;
 import sonia.commons.bigbluebutton.client.Statistics;
 
@@ -114,6 +116,17 @@ public class TransferTask extends TimerTask
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 
+        String user = App.options.getInfluxDbUser();
+        String password = App.options.getInfluxDbPassword();
+        
+        if ( user != null && user.length() > 0 && password != null )
+        {
+          String auth = user + ":" + password;
+          byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
+          String authHeaderValue = "Basic " + new String(encodedAuth);
+          connection.setRequestProperty("Authorization", authHeaderValue);
+        }
+        
         try( PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
           writer.write(message);
         }

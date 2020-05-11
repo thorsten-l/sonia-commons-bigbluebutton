@@ -56,5 +56,13 @@ public class Options
   @Getter
   @Option( name="--influxdb-url", usage="InfluxDb URL", required=false )
   private String influxDbUrl;
+  
+  @Getter
+  @Option( name="--influxdb-user", usage="InfluxDb User", required=false )
+  private String influxDbUser;
+
+  @Getter
+  @Option( name="--influxdb-password", usage="InfluxDb Password", required=false )
+  private String influxDbPassword;
 
 }
