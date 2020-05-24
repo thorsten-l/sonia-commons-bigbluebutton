@@ -119,7 +119,7 @@ public class App
       for (Meeting meeting : client.getMeetings())
       {
         System.out.println("\n" + meeting.getMeetingName() + " (" + meeting.
-          getParticipantCount() + ", " + meeting.getCreateDate() + ")");
+          getParticipantCount() + ", " + meeting.getCreateDate() + ", " + meeting.getMeetingID() + ")");
 
         MeetingMetadata metadata = meeting.getMetadata();
         if (metadata != null)

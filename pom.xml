@@ -76,6 +76,39 @@
       <version>2.27</version>
     </dependency>
     
+    
+        <!-- manifest -->
+    
+    <dependency>
+      <groupId>sonia.commons</groupId>
+      <artifactId>sonia-commons-manifest</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+    <!-- cipher -->
+
+    <dependency>
+      <groupId>sonia.commons</groupId>
+      <artifactId>sonia-commons-crypt</artifactId>
+      <version>1.1.0</version>
+    </dependency>    
+      
+    <!-- logging -->
+      
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+      
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+
+    
+    
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
