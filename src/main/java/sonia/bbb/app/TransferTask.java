@@ -81,6 +81,7 @@ public class TransferTask extends TimerTask
       message += "video,host=" + hostname + " value=" + statistics.getNumberOfVideoStreams() + "\n";
       message += "listenOnly,host=" + hostname + " value=" + statistics.getNumberOfListenOnlyStreams() + "\n";
       message += "viewerOnly,host=" + hostname + " value=" + statistics.getNumberOfViewerOnlyStreams() + "\n";
+      message += "uniqueUsers,host=" + hostname + " value=" + statistics.getNumberOfUniqueUsers() + "\n";
       message += "unique_users,host=" + hostname + " value=" + statistics.getNumberOfUniqueUsers() + "\n";
       message += "largestConference,host=" + hostname + " value=" + statistics.getLargestConference() + "\n";
       message += "healthCheck,host=" + hostname + " value=" + statistics.getHealthCheck() + "\n";
